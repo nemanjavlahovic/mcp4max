@@ -1,0 +1,20 @@
+{
+  "name": "mcp4max",
+  "version": "0.1.0",
+  "description": "Programmatic Max for Live device generation",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "m4l": "bin/m4l.ts"
+  },
+  "scripts": {
+    "build": "tsx bin/m4l.ts build",
+    "example:delay": "tsx devices/examples/simple-delay.ts",
+    "example:midi": "tsx devices/examples/midi-echo.ts",
+    "example:synth": "tsx devices/examples/basic-synth.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
