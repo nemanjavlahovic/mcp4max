@@ -11,7 +11,8 @@
     "build": "tsx bin/m4l.ts build",
     "example:delay": "tsx devices/examples/simple-delay.ts",
     "example:midi": "tsx devices/examples/midi-echo.ts",
-    "example:synth": "tsx devices/examples/basic-synth.ts"
+    "example:synth": "tsx devices/examples/basic-synth.ts",
+    "example:grainy": "tsx devices/examples/grainy-delay.ts"
   },
   "devDependencies": {
     "tsx": "^4.19.0",

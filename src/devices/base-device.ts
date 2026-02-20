@@ -1,4 +1,5 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
+import { Buffer } from 'node:buffer';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { Box, resetBoxCounter } from '../core/box.js';
@@ -132,7 +133,7 @@ export abstract class BaseDevice {
     }
 
     // Determine output path
-    const filename = options.filename ?? `${this._name}.maxpat`;
+    const filename = options.filename ?? `${this._name}.amxd`;
     const outputDir =
       options.outputDir ?? join(homedir(), ABLETON_PATHS[this.deviceType]);
 
@@ -141,7 +142,23 @@ export abstract class BaseDevice {
 
     const outputPath = join(outputDir, filename);
     const json = this.patcher.toString();
-    writeFileSync(outputPath, json, 'utf-8');
+
+    // Write .amxd with binary header, or plain JSON for .maxpat
+    if (filename.endsWith('.amxd')) {
+      const jsonBuf = Buffer.from(json, 'utf-8');
+      const header = Buffer.alloc(32);
+      header.write('ampf', 0, 'ascii');          // file magic
+      header.writeUInt32LE(4, 4);                 // constant
+      header.write('aaaa', 8, 'ascii');           // alignment
+      header.write('meta', 12, 'ascii');          // meta chunk tag
+      header.writeUInt32LE(4, 16);                // meta payload size
+      header.writeUInt32LE(7, 20);                // meta value (device type)
+      header.write('ptch', 24, 'ascii');          // patcher chunk tag
+      header.writeUInt32LE(jsonBuf.length, 28);   // patcher payload size
+      writeFileSync(outputPath, Buffer.concat([header, jsonBuf]));
+    } else {
+      writeFileSync(outputPath, json, 'utf-8');
+    }
 
     // Run validation and print warnings
     const warnings = this.validate();

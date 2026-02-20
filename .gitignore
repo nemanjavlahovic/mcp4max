@@ -1,4 +1,5 @@
 node_modules/
 dist/
 *.maxpat
+*.amxd
 .DS_Store

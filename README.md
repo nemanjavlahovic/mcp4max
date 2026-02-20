@@ -126,7 +126,7 @@ device.connect(cutoff.raw, someObj.in(0));   // raw 0-1
 
 ```typescript
 device.save();                                    // default: Ableton User Library
-device.save({ filename: 'custom.maxpat' });       // custom filename
+device.save({ filename: 'custom.amxd' });         // custom filename
 device.save({ outputDir: '/path/to/folder' });    // custom directory
 ```
 
@@ -155,11 +155,12 @@ npx tsx bin/m4l.ts list                  # list all 153 registered Max objects
 
 ## Examples
 
-Three complete examples in `devices/examples/`:
+Four complete examples in `devices/examples/`:
 
 | Example | Type | What it does |
 |---------|------|-------------|
 | `simple-delay.ts` | AudioEffect | Stereo delay with time, feedback, and dry/wet mix |
+| `grainy-delay.ts` | AudioEffect | Diffuse stereo delay with LFO-modulated times and cross-feedback |
 | `midi-echo.ts` | MIDIEffect | MIDI note echo with velocity decay |
 | `basic-synth.ts` | Instrument | Monophonic saw → filter → ADSR subtractive synth |
 
@@ -167,6 +168,7 @@ Run them:
 
 ```bash
 npx tsx devices/examples/simple-delay.ts
+npx tsx devices/examples/grainy-delay.ts
 npx tsx devices/examples/midi-echo.ts
 npx tsx devices/examples/basic-synth.ts
 ```
@@ -200,9 +202,9 @@ Patches are automatically laid out:
 
 ## How It Works
 
-The library builds an in-memory graph of Max objects and connections, then serializes it to the `.maxpat` JSON format that Max for Live reads natively. The output is a standard `.maxpat` file — open it in the Max editor, and you'll see a fully wired patch.
+The library builds an in-memory graph of Max objects and connections, then serializes it to `.amxd` — the native Max for Live device format. The output includes the required binary header so Ableton recognizes it immediately in the User Library browser.
 
-`.maxpat` files can be dragged directly into Ableton Live. If you want to freeze the device (embed dependencies), open it in the Max editor and save as `.amxd`.
+Devices can be dragged directly onto tracks in Ableton Live. Open in the Max editor to inspect or modify the patch visually. To freeze the device (embed dependencies), use Max's "Freeze" option.
 
 ## License
 

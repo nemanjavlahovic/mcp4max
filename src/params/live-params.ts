@@ -49,40 +49,30 @@ export class Param {
     const longname = options.longname ?? name;
     const shortname = options.shortname ?? name;
 
-    // Build saved_attribute_attributes for the parameter_initial_enable and other attrs
-    const parameterAttrs: Record<string, unknown> = {};
-
-    // Build the parameter info for saved_object_attributes
-    const paramInfo: Record<string, unknown> = {
+    // All parameter metadata goes in saved_attribute_attributes.valueof
+    const valueof: Record<string, unknown> = {
       parameter_longname: longname,
       parameter_shortname: shortname,
       parameter_type: options.type === 'menu' || options.type === 'tab' ? 2 : 0, // 0=float, 2=enum
       parameter_unitstyle: UNITSTYLES[options.unitstyle ?? 'int'] ?? 0,
+      parameter_modmode: 0,
     };
 
-    if (options.min !== undefined) paramInfo.parameter_mmin = options.min;
-    if (options.max !== undefined) paramInfo.parameter_mmax = options.max;
+    if (options.min !== undefined) valueof.parameter_mmin = options.min;
+    if (options.max !== undefined) valueof.parameter_mmax = options.max;
     if (options.initial !== undefined) {
-      paramInfo.parameter_initial = [options.initial];
-      paramInfo.parameter_initial_enable = 1;
-      parameterAttrs.valueof = {
-        parameter_initial: [options.initial],
-        parameter_initial_enable: 1,
-      };
+      valueof.parameter_initial = [options.initial];
+      valueof.parameter_initial_enable = 1;
     }
-    if (options.exponent !== undefined) paramInfo.parameter_exponent = options.exponent;
-    if (options.steps !== undefined) paramInfo.parameter_steps = options.steps;
-    if (options.enum) paramInfo.parameter_enum = options.enum;
+    if (options.exponent !== undefined) valueof.parameter_exponent = options.exponent;
+    if (options.steps !== undefined) valueof.parameter_steps = options.steps;
+    if (options.enum) valueof.parameter_enum = options.enum;
 
     const extraProps: Record<string, unknown> = {
       parameter_enable: 1,
-      saved_object_attributes: paramInfo,
+      saved_attribute_attributes: { valueof },
       varname: longname,
     };
-
-    if (Object.keys(parameterAttrs).length > 0) {
-      extraProps.saved_attribute_attributes = parameterAttrs;
-    }
 
     // Set presentation height
     const height = options.height ?? specInfo.height;
